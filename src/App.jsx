@@ -4,7 +4,7 @@ const App = () => {
   return (
     <main className="w-[600px] h-[90vh] bg-[#d9e2fd] shadow-xl rounded-lg py-6">
       <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-12 px-8">
+        <div className="flex flex-col gap-10 px-8">
           <div className="text-lg">
             <div className="font-bold">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quaerat, quasi!</div>
             <div className="flex gap-4 mt-3">
