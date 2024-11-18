@@ -10,7 +10,7 @@ const Questions = () => {
         return textArea.value;
     }
 
-    //shuffling options
+    //shuffling algorithm for choices
     const shuffle = (incorrect_answers, correct_answer) => {
         const answers = [...incorrect_answers];
         
@@ -20,6 +20,7 @@ const Questions = () => {
         return answers;
     }
 
+    //fetching the questions and setting them to the questions state
     useEffect(() => {
         const getQuestions = async () => {
             try {
@@ -41,9 +42,7 @@ const Questions = () => {
         getQuestions();
     }, []);
 
-    console.log(questions)
-
-
+    //Ensuring that the component is not loaded before the questions state is populated
     if (questions.length === 0) {
         return <div>Loading...</div>;
     }
