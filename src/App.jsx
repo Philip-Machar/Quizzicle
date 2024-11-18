@@ -6,7 +6,7 @@ const router = createBrowserRouter(routes);
 
 const App = () => {
   return (
-    <main className="w-[600px] h-[90vh] bg-[#d9e2fd] shadow-xl rounded-lg py-6 grid place-content-center">
+    <main className="w-[1000px] h-[90vh] bg-[#d9e2fd] shadow-xl rounded-lg py-6 grid place-content-center">
       <RouterProvider router={router} />
     </main>
   )

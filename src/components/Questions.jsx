@@ -15,7 +15,7 @@ const Questions = () => {
             try {
                 const res = await fetch("https://opentdb.com/api.php?amount=5");
                 const data = await res.json();
-                //Deconde questions and answers
+                
                 const decodedQuestions = data.results.map((question) => ({
                     ...question,
                     question: decodeHtml(question.question),
@@ -31,22 +31,35 @@ const Questions = () => {
         getQuestions();
     }, []);
 
-      // Conditional rendering to check if questions are available
+
     if (questions.length === 0) {
-        return <div>Loading...</div>; // Show loading message until questions are fetched
+        return <div>Loading...</div>;
     }
 
     return (
         <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-10 px-8">
-                <div className="text-lg">
-                    <div className="font-bold">{questions[0].question}</div>
-                    <div className="flex gap-4 mt-3">
-                    <div className="min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#c1c4fc] hover:border-transparent">Hola</div>
-                    <div className="min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#c1c4fc] hover:border-transparent">Bonjour</div>
-                    <div className="min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#c1c4fc] hover:border-transparent">Ciao</div>
-                    <div className="min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#c1c4fc] hover:border-transparent">Namaste</div>
-                    </div>
+                {
+                    questions.map((question, index) => {
+                        return (
+                            <div key={index} className="text-lg">
+                                <div className="font-bold">{question.question}</div>
+                                <div className="flex gap-4 mt-3">
+                                    {
+                                        [...question.incorrect_answers, question.correct_answer].map((answer, index) => {
+                                            return (
+                                                <div key={index} className="min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#c1c4fc] hover:border-transparent">{answer}</div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        )
+                    })
+                }
+                <div className="w-full flex justify-center items-center gap-4">
+                    <div className="font-bold">You have scored 3/5 correct</div>
+                    <button className="bg-[#465090] py-2 px-4 rounded-md min-w-12 text-white">Check Answers</button>
                 </div>
             </div>
         </div>
