@@ -10,10 +10,20 @@ const Questions = () => {
         return textArea.value;
     }
 
+    //shuffling options
+    const shuffle = (incorrect_answers, correct_answer) => {
+        const answers = [...incorrect_answers];
+        
+        const randomIndex = Math.floor(Math.random() * (answers.length + 1));
+        answers.splice(randomIndex, 0, correct_answer);
+        
+        return answers;
+    }
+
     useEffect(() => {
         const getQuestions = async () => {
             try {
-                const res = await fetch("https://opentdb.com/api.php?amount=5");
+                const res = await fetch("https://opentdb.com/api.php?amount=5&type=multiple");
                 const data = await res.json();
                 
                 const decodedQuestions = data.results.map((question) => ({
@@ -31,6 +41,8 @@ const Questions = () => {
         getQuestions();
     }, []);
 
+    console.log(questions)
+
 
     if (questions.length === 0) {
         return <div>Loading...</div>;
@@ -43,10 +55,10 @@ const Questions = () => {
                     questions.map((question, index) => {
                         return (
                             <div key={index} className="text-lg">
-                                <div className="font-bold">{question.question}</div>
+                                <div className="font-semibold">{question.question}</div>
                                 <div className="flex gap-4 mt-3">
                                     {
-                                        [...question.incorrect_answers, question.correct_answer].map((answer, index) => {
+                                        shuffle(question.incorrect_answers, question.correct_answer).map((answer, index) => {
                                             return (
                                                 <div key={index} className="min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#c1c4fc] hover:border-transparent">{answer}</div>
                                             )
