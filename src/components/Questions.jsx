@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react"
+import { nanoid } from "nanoid";
 
 const Questions = () => {
-    const [questions, setQuestions] = useState([])
+    const [questions, setQuestions] = useState([]);
+    const [count, setCount] = useState(0);
 
     //Decoding HTML entities
     const decodeHtml = (html) => {
@@ -10,15 +12,26 @@ const Questions = () => {
         return textArea.value;
     }
 
+    //Determinig which choice has been chosen
+    const handleChoice = (questionId, answerId) => {
+        const question = questions.find((question) => question.id === questionId);
+        const chosenAswer = question.choices.find((answer) => answer.id === answerId);
+        const isCorrectAnswer = question.correct_answer === chosenAswer.answer;
+
+        if (isCorrectAnswer) {
+            setCount((prevCount) => prevCount += 1)
+        }
+    };
+
     //shuffling algorithm for choices
     const shuffle = (incorrect_answers, correct_answer) => {
         const answers = [...incorrect_answers];
         
         const randomIndex = Math.floor(Math.random() * (answers.length + 1));
         answers.splice(randomIndex, 0, correct_answer);
-        
-        return answers;
-    }
+
+        return answers.map((answer) => ({answer: answer, id: nanoid()}))
+    };
 
     //fetching the questions and setting them to the questions state
     useEffect(() => {
@@ -29,9 +42,11 @@ const Questions = () => {
                 
                 const decodedQuestions = data.results.map((question) => ({
                     ...question,
+                    id: nanoid(),
                     question: decodeHtml(question.question),
                     correct_answer: decodeHtml(question.correct_answer),
                     incorrect_answers: question.incorrect_answers.map(incorrect_answer => decodeHtml(incorrect_answer)),
+                    choices: shuffle(question.incorrect_answers, question.correct_answer)
                 }));
 
                 setQuestions(decodedQuestions);
@@ -47,19 +62,27 @@ const Questions = () => {
         return <div>Loading...</div>;
     }
 
+    console.log(count)
+
     return (
         <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-10 px-8">
                 {
-                    questions.map((question, index) => {
+                    questions.map((question) => {
                         return (
-                            <div key={index} className="text-lg">
+                            <div key={question.id} className="text-lg">
                                 <div className="font-semibold">{question.question}</div>
                                 <div className="flex gap-4 mt-3">
                                     {
-                                        shuffle(question.incorrect_answers, question.correct_answer).map((answer, index) => {
+                                        question.choices.map((answer) => {
                                             return (
-                                                <div key={index} className="min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#c1c4fc] hover:border-transparent">{answer}</div>
+                                                <div 
+                                                    key={answer.id} 
+                                                    onClick={() => handleChoice(question.id, answer.id)}
+                                                    className="min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#c1c4fc] hover:border-transparent"
+                                                >
+                                                    {answer.answer}
+                                                </div>
                                             )
                                         })
                                     }
