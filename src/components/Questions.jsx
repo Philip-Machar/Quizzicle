@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 const Questions = () => {
     const [questions, setQuestions] = useState([]);
     const [count, setCount] = useState(0);
+    const [showScore, setShowScore] = useState(false);
 
     //Decoding HTML entities
     const decodeHtml = (html) => {
@@ -21,6 +22,11 @@ const Questions = () => {
         if (isCorrectAnswer) {
             setCount((prevCount) => prevCount += 1)
         }
+    };
+
+    //Show score
+    const handleShowScore = () => {
+        setShowScore(true)
     };
 
     //shuffling algorithm for choices
@@ -92,8 +98,13 @@ const Questions = () => {
                     })
                 }
                 <div className="w-full flex justify-center items-center gap-4">
-                    <div className="font-bold">You have scored 3/5 correct</div>
-                    <button className="bg-[#465090] py-2 px-4 rounded-md min-w-12 text-white">Check Answers</button>
+                    {showScore && <div className="font-bold">You have scored {count}/5 correct</div>}
+                    <button 
+                        onClick={handleShowScore}
+                        className="bg-[#465090] py-2 px-4 rounded-md min-w-12 text-white"
+                    >
+                        Check Answers
+                    </button>
                 </div>
             </div>
         </div>
