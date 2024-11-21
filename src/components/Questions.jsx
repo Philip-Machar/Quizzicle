@@ -15,13 +15,7 @@ const Questions = () => {
 
     //Determinig which choice has been chosen
     const handleChoice = (questionId, answerId) => {
-        const question = questions.find((question) => question.id === questionId);
-        const chosenAswer = question.choices.find((answer) => answer.id === answerId);
-        const isCorrectAnswer = question.correct_answer === chosenAswer.answer;
-
-        if (isCorrectAnswer) {
-            setCount((prevCount) => prevCount += 1)
-        }
+        
     };
 
     //Show score
@@ -51,8 +45,9 @@ const Questions = () => {
                     id: nanoid(),
                     question: decodeHtml(question.question),
                     correct_answer: decodeHtml(question.correct_answer),
-                    incorrect_answers: question.incorrect_answers.map(incorrect_answer => decodeHtml(incorrect_answer)),
-                    choices: shuffle(question.incorrect_answers, question.correct_answer)
+                    choseAnswerId: null,
+                    incorrect_answers: question.incorrect_answers.map((incorrect_answer) => decodeHtml(incorrect_answer)),
+                    choices: shuffle(question.incorrect_answers, question.correct_answer),
                 }));
 
                 setQuestions(decodedQuestions);
@@ -66,9 +61,7 @@ const Questions = () => {
     //Ensuring that the component is not loaded before the questions state is populated
     if (questions.length === 0) {
         return <div>Loading...</div>;
-    }
-
-    console.log(count)
+    };
 
     return (
         <div className="flex flex-col gap-8">
@@ -85,7 +78,7 @@ const Questions = () => {
                                                 <div 
                                                     key={answer.id} 
                                                     onClick={() => handleChoice(question.id, answer.id)}
-                                                    className="min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#c1c4fc] hover:border-transparent"
+                                                    className="min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#465090] hover:text-white hover:border-transparent"
                                                 >
                                                     {answer.answer}
                                                 </div>
@@ -111,4 +104,4 @@ const Questions = () => {
     )
 }
 
-export default Questions
+export default Questions;
