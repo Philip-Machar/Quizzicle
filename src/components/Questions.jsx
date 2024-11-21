@@ -15,12 +15,30 @@ const Questions = () => {
 
     //Determinig which choice has been chosen
     const handleChoice = (questionId, answerId) => {
-        
+        setQuestions((prevQuestions) => {
+            return (
+                prevQuestions.map((question) => {
+                    if (question.id === questionId) {
+                        return { ...question, choseAnswerId: answerId}
+                    } else {
+                        return question
+                    }
+                })
+            )
+        })
     };
 
     //Show score
     const handleShowScore = () => {
-        setShowScore(true)
+        let score = 0;
+        questions.forEach((question) => {
+            const chosenAnswer = question.choices.find((answer) => answer.id === question.choseAnswerId)
+            if (chosenAnswer?.answer === question.correct_answer) {
+                score += 1
+            }
+        });
+        setCount(score);
+        setShowScore(true);
     };
 
     //shuffling algorithm for choices
@@ -78,7 +96,7 @@ const Questions = () => {
                                                 <div 
                                                     key={answer.id} 
                                                     onClick={() => handleChoice(question.id, answer.id)}
-                                                    className="min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#465090] hover:text-white hover:border-transparent"
+                                                    className={`min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#465090] hover:text-white hover:border-transparent ${question.choseAnswerId === answer.id && "bg-[#465090] text-white border-transparent"}`}
                                                 >
                                                     {answer.answer}
                                                 </div>
