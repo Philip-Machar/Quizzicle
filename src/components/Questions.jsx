@@ -57,7 +57,7 @@ const Questions = () => {
     useEffect(() => {
         const getQuestions = async () => {
             try {
-                const res = await fetch("https://opentdb.com/api.php?amount=5&type=multiple");
+                const res = await fetch("https://opentdb.com/api.php?amount=5&category=23&difficulty=medium&type=multiple");
                 const data = await res.json();
                 
                 const decodedQuestions = data.results.map((question) => {
