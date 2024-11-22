@@ -5,6 +5,7 @@ const Questions = () => {
     const [questions, setQuestions] = useState([]);
     const [count, setCount] = useState(0);
     const [showScore, setShowScore] = useState(false);
+    const [revealCorrectAnswer, setRevealCorrectAnswer] = useState(false);
 
     //Decoding HTML entities
     const decodeHtml = (html) => {
@@ -39,6 +40,7 @@ const Questions = () => {
         });
         setCount(score);
         setShowScore(true);
+        setRevealCorrectAnswer(true);
     };
 
     //shuffling algorithm for choices
@@ -97,11 +99,12 @@ const Questions = () => {
                                 <div className="flex gap-4 mt-3">
                                     {
                                         question.choices.map((answer) => {
+                                            const isCorrect = question.correct_answer === answer.answer;
                                             return (
                                                 <div 
                                                     key={answer.id} 
                                                     onClick={() => handleChoice(question.id, answer.id)}
-                                                    className={`min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#465090] hover:text-white hover:border-transparent ${question.choseAnswerId === answer.id && "bg-[#465090] text-white border-transparent"}`}
+                                                    className={`min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#465090] hover:text-white hover:border-transparent ${question.choseAnswerId === answer.id && "bg-[#465090] text-white border-transparent"} ${question.choseAnswerId === answer.id && !isCorrect && revealCorrectAnswer && "bg-red-500 text-white border-transparent"} ${revealCorrectAnswer && isCorrect && "bg-green-500 text-white border-transparent"}`}
                                                 >
                                                     {answer.answer}
                                                 </div>
