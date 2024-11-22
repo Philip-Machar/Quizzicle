@@ -58,15 +58,20 @@ const Questions = () => {
                 const res = await fetch("https://opentdb.com/api.php?amount=5&type=multiple");
                 const data = await res.json();
                 
-                const decodedQuestions = data.results.map((question) => ({
-                    ...question,
-                    id: nanoid(),
-                    question: decodeHtml(question.question),
-                    correct_answer: decodeHtml(question.correct_answer),
-                    choseAnswerId: null,
-                    incorrect_answers: question.incorrect_answers.map((incorrect_answer) => decodeHtml(incorrect_answer)),
-                    choices: shuffle(question.incorrect_answers, question.correct_answer),
-                }));
+                const decodedQuestions = data.results.map((question) => {
+                    const decodedIncorrectAnswers = question.incorrect_answers.map((incorrect_answer) => decodeHtml(incorrect_answer));
+                    const decodedCorrectAnswer = decodeHtml(question.correct_answer);
+                
+                    return {
+                        ...question,
+                        id: nanoid(),
+                        question: decodeHtml(question.question),
+                        correct_answer: decodedCorrectAnswer,
+                        choseAnswerId: null,
+                        incorrect_answers: decodedIncorrectAnswers,
+                        choices: shuffle(decodedIncorrectAnswers, decodedCorrectAnswer),
+                    };
+                });
 
                 setQuestions(decodedQuestions);
             } catch (error) {
