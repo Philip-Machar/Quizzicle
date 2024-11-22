@@ -2,7 +2,7 @@
 
 A React-based multiple-choice quiz application that challenges users with historical trivia questions.
 
-![Quizzicle Screenshot](/public/images/quizzical_screenshot.png)
+![Quizzicle Screenshot](/public/images/quizzicle_screenshot.png)
 
 [Live Demo](your-live-demo-url-here)
 
