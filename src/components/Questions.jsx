@@ -86,7 +86,7 @@ const Questions = () => {
         getQuestions();
     };
 
-    //loading questions
+    //loading questions to state during the first render
     useEffect(() => {
         getQuestions();
     }, []);
