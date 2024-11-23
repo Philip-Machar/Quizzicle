@@ -5,14 +5,13 @@ const Questions = () => {
     const [questions, setQuestions] = useState([]);
     const [count, setCount] = useState(0);
     const [showScore, setShowScore] = useState(false);
-    const [revealCorrectAnswer, setRevealCorrectAnswer] = useState(false);
 
     //Decoding HTML entities
     const decodeHtml = (html) => {
         const textArea = document.createElement("textarea");
         textArea.innerHTML = html;
         return textArea.value;
-    }
+    };
 
     //Determinig which choice has been chosen
     const handleChoice = (questionId, answerId) => {
@@ -40,11 +39,10 @@ const Questions = () => {
         });
         setCount(score);
         setShowScore(true);
-        setRevealCorrectAnswer(true);
     };
 
-    //shuffling algorithm for choices
-    const shuffle = (incorrect_answers, correct_answer) => {
+     //shuffling algorithm for choices
+     const shuffle = (incorrect_answers, correct_answer) => {
         const answers = [...incorrect_answers];
         
         const randomIndex = Math.floor(Math.random() * (answers.length + 1));
@@ -53,33 +51,43 @@ const Questions = () => {
         return answers.map((answer) => ({answer: answer, id: nanoid()}))
     };
 
-    //fetching the questions and setting them to the questions state
-    useEffect(() => {
-        const getQuestions = async () => {
-            try {
-                const res = await fetch("https://opentdb.com/api.php?amount=5&category=23&difficulty=medium&type=multiple");
-                const data = await res.json();
-                
-                const decodedQuestions = data.results.map((question) => {
-                    const decodedIncorrectAnswers = question.incorrect_answers.map((incorrect_answer) => decodeHtml(incorrect_answer));
-                    const decodedCorrectAnswer = decodeHtml(question.correct_answer);
-                
-                    return {
-                        ...question,
-                        id: nanoid(),
-                        question: decodeHtml(question.question),
-                        correct_answer: decodedCorrectAnswer,
-                        choseAnswerId: null,
-                        incorrect_answers: decodedIncorrectAnswers,
-                        choices: shuffle(decodedIncorrectAnswers, decodedCorrectAnswer),
-                    };
-                });
+    //Fetching questions
+    const getQuestions = async () => {
+        try {
+            const res = await fetch("https://opentdb.com/api.php?amount=5&category=23&difficulty=medium&type=multiple");
+            const data = await res.json();
+            
+            const decodedQuestions = data.results.map((question) => {
+                const decodedIncorrectAnswers = question.incorrect_answers.map((incorrect_answer) => decodeHtml(incorrect_answer));
+                const decodedCorrectAnswer = decodeHtml(question.correct_answer);
+            
+                return {
+                    ...question,
+                    id: nanoid(),
+                    question: decodeHtml(question.question),
+                    correct_answer: decodedCorrectAnswer,
+                    choseAnswerId: null,
+                    incorrect_answers: decodedIncorrectAnswers,
+                    choices: shuffle(decodedIncorrectAnswers, decodedCorrectAnswer),
+                };
+            });
 
-                setQuestions(decodedQuestions);
-            } catch (error) {
-                console.error(`Error: ${error}`)
-            }
-        };
+            setQuestions(decodedQuestions);
+        } catch (error) {
+            console.error(`Error: ${error}`)
+        }
+    };
+
+    //restart game
+    const restartGame = () => {
+        setQuestions([])
+        setCount(0);
+        setShowScore(false);
+        getQuestions();
+    };
+
+    //loading questions
+    useEffect(() => {
         getQuestions();
     }, []);
 
@@ -104,7 +112,7 @@ const Questions = () => {
                                                 <div 
                                                     key={answer.id} 
                                                     onClick={() => handleChoice(question.id, answer.id)}
-                                                    className={`min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#465090] hover:text-white hover:border-transparent ${question.choseAnswerId === answer.id && "bg-[#465090] text-white border-transparent"} ${question.choseAnswerId === answer.id && !isCorrect && revealCorrectAnswer && "bg-red-500 text-white border-transparent"} ${revealCorrectAnswer && isCorrect && "bg-green-500 text-white border-transparent"}`}
+                                                    className={`min-w-12 border-2 border-[#000] py-1 px-2 rounded-xl grid place-content-center cursor-pointer hover:bg-[#465090] hover:text-white hover:border-transparent ${question.choseAnswerId === answer.id && "bg-[#465090] text-white border-transparent"} ${question.choseAnswerId === answer.id && !isCorrect && showScore && "bg-red-500 text-white border-transparent"} ${showScore && isCorrect && "bg-green-500 text-white border-transparent"}`}
                                                 >
                                                     {answer.answer}
                                                 </div>
@@ -118,12 +126,17 @@ const Questions = () => {
                 }
                 <div className="w-full flex justify-center items-center gap-4">
                     {showScore && <div className="font-bold">You have scored {count}/5 correct</div>}
-                    <button 
+                    {showScore ? <button 
+                        onClick={restartGame}
+                        className="bg-[#465090] py-2 px-4 rounded-md min-w-12 text-white"
+                    >
+                        Play Again!
+                    </button> : <button 
                         onClick={handleShowScore}
                         className="bg-[#465090] py-2 px-4 rounded-md min-w-12 text-white"
                     >
                         Check Answers
-                    </button>
+                    </button>}
                 </div>
             </div>
         </div>
