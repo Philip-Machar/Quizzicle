@@ -4,7 +4,7 @@ A React-based multiple-choice quiz application that challenges users with histor
 
 ![Quizzicle Screenshot](/public/images/quizzicle_screenshot.png)
 
-[Live Demo](your-live-demo-url-here)
+[Live Demo](https://quizzicle-main.vercel.app/)
 
 ## Description
 
